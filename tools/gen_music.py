@@ -15,7 +15,7 @@ SR = 44100
 BPM = 120.0
 BEAT = 60.0 / BPM          # 0.5s
 BAR = BEAT * 4             # 2.0s
-DURATION = 36.0
+DURATION = 48.0
 N = int(SR * DURATION)     # total samples
 
 random.seed(1337)
@@ -218,17 +218,18 @@ for i in range(rn):
     riser[i] = (random.random() * 2 - 1) * env * 0.3
 add(0.0, riser, 0.25)
 
-# ---- final impact + reverse cymbal on last bar ----
-crash_t = (total_bars - 1) * BAR
-cdur = 1.4
-cn = int(cdur * SR)
-crash = [0.0] * cn
-for i in range(cn):
-    t = i / SR
-    env = math.exp(-t * 3.0)
-    crash[i] = (random.random() * 2 - 1) * env
-add(crash_t, crash, 0.5)
-kick(crash_t, 1.2)
+# ---- impacts: outro downbeat (bar 19) and the last bar ----
+OUTRO_BAR = 19
+for crash_t in (OUTRO_BAR * BAR, (total_bars - 1) * BAR):
+    cdur = 1.4
+    cn = int(cdur * SR)
+    crash = [0.0] * cn
+    for i in range(cn):
+        t = i / SR
+        env = math.exp(-t * 3.0)
+        crash[i] = (random.random() * 2 - 1) * env
+    add(crash_t, crash, 0.5)
+    kick(crash_t, 1.2)
 
 # ---- master: soft clip + normalize -------------------------------------
 peak = 0.0
