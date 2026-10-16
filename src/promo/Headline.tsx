@@ -5,6 +5,7 @@ import { beatPump, ease } from "../beat";
 /**
  * Kinetic headline: each line drops in on its own beat (line i lands at
  * `at + i * every` local frames) and every landed line pumps with the kick.
+ * Pass `ats` instead to land each line on its own local frame.
  * Words wrapped in *stars* render in brand orange.
  */
 export const Headline: React.FC<{
@@ -13,14 +14,15 @@ export const Headline: React.FC<{
   lines: string[];
   at?: number;
   every?: number;
+  ats?: number[];
   size: number;
   align?: "left" | "center";
-}> = ({ frame, lf, lines, at = 0, every = BEAT_FRAMES * 2, size, align = "center" }) => {
+}> = ({ frame, lf, lines, at = 0, every = BEAT_FRAMES * 2, ats, size, align = "center" }) => {
   const pump = beatPump(frame, 5);
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: align === "center" ? "center" : "flex-start", gap: size * 0.12 }}>
       {lines.map((line, i) => {
-        const t = lf - (at + i * every);
+        const t = lf - (ats ? ats[i] : at + i * every);
         const e = ease(t / 8);
         const hit = t >= 0 && t < 8 ? 1 - t / 8 : 0;
         return (
