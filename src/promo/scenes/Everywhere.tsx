@@ -4,8 +4,8 @@ import { C, FONT } from "../../theme";
 import { ease } from "../../beat";
 import { useLayout } from "../layout";
 
-const WHERE = ["TELEGRAM", "DISCORD", "SLACK", "WHATSAPP", "TERMINAL"];
-const EVERY = 11;
+const WHERE = ["TELEGRAM", "DISCORD", "SLACK", "WHATSAPP", "TRELLO", "TERMINAL"];
+const EVERY = 9;
 
 /** Bar 17: every surface slams in; the newest is orange, earlier ones dim. */
 export const Everywhere: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
