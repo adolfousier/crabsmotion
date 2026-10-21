@@ -3,6 +3,7 @@ import { AbsoluteFill } from "remotion";
 import { C, K } from "../../theme";
 import { ease } from "../../beat";
 import { useLayout } from "../layout";
+import { useCopy } from "../LocaleContext";
 import { Headline } from "../Headline";
 import { Window, Span, typed } from "../Window";
 import { Cursor } from "../../components/Cursor";
@@ -15,12 +16,11 @@ const BANNER = [
   "  \\___/| .__/\\___|_||_|  \\___|_| \\__,_|_.__//__/",
   "       |_|",
 ];
-const ASK = "Hey! I'm your crab. What should I call you?";
-
 /** Bars 3-4: first launch, the crab is already talking. No account, no keys. */
 export const Setup: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
   const lf = frame - start;
   const { vertical } = useLayout();
+  const { copy } = useCopy();
   const inP = ease(lf / 8);
   const name = typed("Adolfo", lf, 52, 0.5);
 
@@ -31,7 +31,7 @@ export const Setup: React.FC<{ frame: number; start: number }> = ({ frame, start
           <div key={l}><Span c={K.orange} b>{l}</Span></div>
         ))}
         <div>{" "}</div>
-        <div><Span c={K.orange} b>{"🦀 "}</Span><Span>{typed(ASK, lf, 8, 1.6)}</Span></div>
+        <div><Span c={K.orange} b>{"🦀 "}</Span><Span>{typed(copy.setup.ask, lf, 8, 1.6)}</Span></div>
         <div>{" "}</div>
         <div style={{ border: `1px solid ${lf >= 44 ? K.orange : K.dim}`, borderRadius: 6, padding: "6px 14px" }}>
           <Span c={K.gray}>{"> "}</Span><Span b>{name}</Span>
@@ -41,7 +41,7 @@ export const Setup: React.FC<{ frame: number; start: number }> = ({ frame, start
     </div>
   );
   const head = (
-    <Headline frame={frame} lf={lf} lines={["NO ACCOUNT.", "NO KEYS.", "*JUST TALK.*"]} ats={[66, 81, 96]} size={vertical ? 120 : 96} align={vertical ? "center" : "left"} />
+    <Headline frame={frame} lf={lf} lines={copy.setup.headline} ats={[66, 81, 96]} size={vertical ? 120 : 96} align={vertical ? "center" : "left"} maxWidth={vertical ? 1044 : 690} />
   );
 
   return vertical ? (

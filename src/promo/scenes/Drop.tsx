@@ -3,19 +3,21 @@ import { AbsoluteFill } from "remotion";
 import { C, FONT, FONT_MONO, RELEASE } from "../../theme";
 import { beatPump, ease } from "../../beat";
 import { useLayout } from "../layout";
+import { useCopy } from "../LocaleContext";
+import { measureMono } from "../textFit";
 import { Logo } from "../Logo";
-
-const STATS = [
-  { n: `${RELEASE.features}`, l: "FEATURES" },
-  { n: `${RELEASE.fixes}`, l: "FIXES" },
-  { n: `${RELEASE.commits}`, l: "COMMITS" },
-  { n: RELEASE.tests.toLocaleString("en-US"), l: "TESTS" },
-];
 
 /** Bars 1-2: the release itself, up front. v0.5.12, JUST DROPPED, then the counts. */
 export const Drop: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
   const lf = frame - start;
-  const { vertical } = useLayout();
+  const { vertical, width } = useLayout();
+  const { copy, n } = useCopy();
+  const stats = [
+    { v: `${RELEASE.features}`, l: copy.drop.features },
+    { v: `${RELEASE.fixes}`, l: copy.drop.fixes },
+    { v: `${RELEASE.commits}`, l: copy.drop.commits },
+    { v: n(RELEASE.tests), l: copy.drop.tests },
+  ];
   const pump = beatPump(frame, 5);
   const flash = lf < 7 ? 1 - lf / 7 : 0;
   const verIn = ease(lf / 7);
@@ -25,6 +27,17 @@ export const Drop: React.FC<{ frame: number; start: number }> = ({ frame, start 
   const verSize = vertical ? 210 : 230;
   const tagSize = vertical ? 62 : 62;
   const statSize = vertical ? 30 : 32;
+  const statGap = vertical ? 26 : 34;
+  // A translation can make the stats row wider than the frame, so measure it
+  // with the real mono advance and drop to two rows of two when it would spill.
+  // Measured off the renders: English lands at 1025px of the 1080px vertical
+  // frame, Indonesian at 985, Portuguese at 1147. The 0.96 limit keeps the two
+  // that fit on one row and wraps only the one that does not.
+  const rowWidth = (items: typeof stats) =>
+    items.reduce((w, s) => w + measureMono(`${s.v} ${s.l}`, statSize, 2), 0) +
+    statGap * (items.length * 2 - 2) +
+    measureMono("·", statSize) * (items.length - 1);
+  const statRows = rowWidth(stats) <= width * 0.96 ? [stats] : [stats.slice(0, 2), stats.slice(2)];
 
   return (
     <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
@@ -72,28 +85,31 @@ export const Drop: React.FC<{ frame: number; start: number }> = ({ frame, start 
           transform: `translateY(${(1 - tagIn) * 24}px) scale(${1 + (lf >= 12 && lf < 20 ? (1 - (lf - 12) / 8) * 0.1 : 0)})`,
         }}
       >
-        JUST DROPPED
+        {copy.drop.justDropped}
       </div>
 
       <div
         style={{
           marginTop: vertical ? 54 : 46,
           display: "flex",
-          alignItems: "baseline",
-          gap: vertical ? 26 : 34,
-          fontFamily: FONT_MONO,
-          fontSize: statSize,
+          flexDirection: "column",
+          alignItems: "center",
+          gap: statSize * 0.7,
           opacity: statsIn,
           transform: `translateY(${(1 - statsIn) * 18}px)`,
         }}
       >
-        {STATS.map((s, i) => (
-          <React.Fragment key={s.l}>
-            {i > 0 && <span style={{ color: C.faint }}>·</span>}
-            <span style={{ color: C.dim, letterSpacing: 2 }}>
-              <span style={{ color: C.white, fontWeight: 700 }}>{s.n}</span> {s.l}
-            </span>
-          </React.Fragment>
+        {statRows.map((row) => (
+          <div key={row[0].l} style={{ display: "flex", alignItems: "baseline", gap: statGap, fontFamily: FONT_MONO, fontSize: statSize }}>
+            {row.map((s, i) => (
+              <React.Fragment key={s.l}>
+                {i > 0 && <span style={{ color: C.faint }}>·</span>}
+                <span style={{ color: C.dim, letterSpacing: 2 }}>
+                  <span style={{ color: C.white, fontWeight: 700 }}>{s.v}</span> {s.l}
+                </span>
+              </React.Fragment>
+            ))}
+          </div>
         ))}
       </div>
 

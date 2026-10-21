@@ -1,14 +1,19 @@
 {
   "name": "crabmotion",
   "version": "1.0.0",
-  "description": "OpenCrabs self-portrait motion graphic \u2014 minimalist tech style, music-synced, built with Remotion",
+  "description": "OpenCrabs self-portrait motion graphic — minimalist tech style, music-synced, built with Remotion",
   "private": true,
   "scripts": {
     "dev": "remotion studio",
     "render": "remotion render CrabMotion out/crabmotion-en.mp4",
+    "render:id": "remotion render CrabMotionID out/crabmotion-id.mp4",
+    "render:id:vertical": "remotion render CrabMotionIDVertical out/crabmotion-id-vertical.mp4",
+    "render:pt": "remotion render CrabMotionPT out/crabmotion-pt.mp4",
+    "render:pt:vertical": "remotion render CrabMotionPTVertical out/crabmotion-pt-vertical.mp4",
+    "render:vertical": "remotion render CrabMotionVertical out/crabmotion-en-vertical.mp4",
     "still": "remotion still CrabMotion out/poster.png --frame=180",
-    "upgrade": "remotion upgrade",
-    "render:vertical": "remotion render CrabMotionVertical out/crabmotion-en-vertical.mp4"
+    "test": "tsc --noEmit",
+    "upgrade": "remotion upgrade"
   },
   "dependencies": {
     "@remotion/google-fonts": "4.0.347",

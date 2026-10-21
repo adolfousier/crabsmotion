@@ -3,18 +3,9 @@ import { AbsoluteFill } from "remotion";
 import { C, FONT, FONT_MONO, K, RELEASE, TERM_FONT } from "../../theme";
 import { ease } from "../../beat";
 import { useLayout } from "../layout";
+import { useCopy } from "../LocaleContext";
 
 // The 8 features of this release, one per beat. Wording follows the release notes.
-const FEATURES = [
-  "Telegram guests get the full surface",
-  "One cancellable turn per guest",
-  "Long turns stop and write a plan",
-  "browser_act uploads local files",
-  "bash won't sleep mid-task",
-  "Transcript survives a session switch",
-  "Headless install: provider day zero",
-  "4 phantom fixes · 4 security fixes",
-];
 
 const AT = 10; // first row
 const EVERY = 15; // one beat apart
@@ -23,10 +14,12 @@ const EVERY = 15; // one beat apart
 export const WhatsNew: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
   const lf = frame - start;
   const { vertical } = useLayout();
+  const { copy, n } = useCopy();
+  const features = copy.whatsnew.features;
   const fs = vertical ? 30 : 38;
   const width = vertical ? 980 : 1080;
   const headIn = ease(lf / 8);
-  const landed = FEATURES.filter((_, i) => lf >= AT + i * EVERY).length;
+  const landed = features.filter((_, i) => lf >= AT + i * EVERY).length;
 
   return (
     <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
@@ -44,16 +37,16 @@ export const WhatsNew: React.FC<{ frame: number; start: number }> = ({ frame, st
       >
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", fontFamily: FONT_MONO }}>
           <span style={{ color: C.orange, fontWeight: 700, fontSize: fs * 1.02, letterSpacing: 2 }}>
-            WHAT'S NEW IN {RELEASE.version}
+            {copy.whatsnew.title(RELEASE.version)}
           </span>
           <span style={{ color: C.dim, fontSize: fs * 0.8, letterSpacing: 2 }}>
-            <span style={{ color: C.white, fontWeight: 700 }}>{RELEASE.features}</span> FEATURES
+            <span style={{ color: C.white, fontWeight: 700 }}>{RELEASE.features}</span> {copy.whatsnew.label}
           </span>
         </div>
 
         {/* 8 segments, one lights per landed feature */}
         <div style={{ display: "flex", gap: 6, marginTop: fs * 0.7, marginBottom: fs * 0.9 }}>
-          {FEATURES.map((_, i) => (
+          {features.map((_, i) => (
             <div
               key={i}
               style={{
@@ -68,7 +61,7 @@ export const WhatsNew: React.FC<{ frame: number; start: number }> = ({ frame, st
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: fs * 0.72 }}>
-          {FEATURES.map((f, i) => {
+          {features.map((f, i) => {
             const t = lf - (AT + i * EVERY);
             const e = ease(t / 7);
             const hit = t >= 0 && t < 7 ? 1 - t / 7 : 0;
@@ -114,7 +107,7 @@ export const WhatsNew: React.FC<{ frame: number; start: number }> = ({ frame, st
         </div>
 
         <div style={{ marginTop: fs * 0.9, fontFamily: TERM_FONT, fontSize: fs * 0.66, color: C.dim, letterSpacing: 1 }}>
-          {RELEASE.fixes} FIXES · {RELEASE.commits} COMMITS · {RELEASE.tests.toLocaleString("en-US")} TESTS
+          {copy.whatsnew.footer(`${RELEASE.fixes}`, `${RELEASE.commits}`, n(RELEASE.tests))}
         </div>
       </div>
     </AbsoluteFill>

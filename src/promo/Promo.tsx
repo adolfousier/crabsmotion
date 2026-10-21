@@ -14,6 +14,8 @@ import { Everywhere } from "./scenes/Everywhere";
 import { Numbers } from "./scenes/Numbers";
 import { Outro } from "./scenes/Outro";
 import { VersionBadge } from "./VersionBadge";
+import { CopyProvider } from "./LocaleContext";
+import { Locale } from "../copy";
 
 // Scene order on the shared 120 BPM grid; each runs until the next one starts.
 const SCENES: [number, React.FC<{ frame: number; start: number }>][] = [
@@ -30,24 +32,26 @@ const SCENES: [number, React.FC<{ frame: number; start: number }>][] = [
   [T.outro, Outro],
 ];
 
-/** v0.5.12 release promo: same timeline for the 16:9 and 9:16 cuts. */
-export const Promo: React.FC = () => {
+/** v0.5.12 release promo: same timeline for every cut, one locale per composition. */
+export const Promo: React.FC<{ locale?: Locale }> = ({ locale = "en" }) => {
   const frame = useCurrentFrame();
   return (
-    <AbsoluteFill style={{ backgroundColor: C.bg }}>
-      <Audio src={staticFile("score.wav")} />
-      <Background frame={frame} accent={C.orange} />
-      {SCENES.map(([from, Scene], i) => {
-        const to = SCENES[i + 1]?.[0] ?? T.end;
-        return (
-          <Sequence key={from} from={from} durationInFrames={to - from}>
-            <Scene frame={frame} start={from} />
-          </Sequence>
-        );
-      })}
-      <Sequence from={T.hook} durationInFrames={T.end - T.hook}>
-        <VersionBadge lf={frame - T.hook} />
-      </Sequence>
-    </AbsoluteFill>
+    <CopyProvider locale={locale}>
+      <AbsoluteFill style={{ backgroundColor: C.bg }}>
+        <Audio src={staticFile("score.wav")} />
+        <Background frame={frame} accent={C.orange} />
+        {SCENES.map(([from, Scene], i) => {
+          const to = SCENES[i + 1]?.[0] ?? T.end;
+          return (
+            <Sequence key={from} from={from} durationInFrames={to - from}>
+              <Scene frame={frame} start={from} />
+            </Sequence>
+          );
+        })}
+        <Sequence from={T.hook} durationInFrames={T.end - T.hook}>
+          <VersionBadge lf={frame - T.hook} />
+        </Sequence>
+      </AbsoluteFill>
+    </CopyProvider>
   );
 };

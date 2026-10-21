@@ -3,6 +3,7 @@ import { AbsoluteFill } from "remotion";
 import { C, K, TERM_FONT } from "../../theme";
 import { beatPump, ease } from "../../beat";
 import { useLayout } from "../layout";
+import { useCopy } from "../LocaleContext";
 import { Headline } from "../Headline";
 import { Window, Span, typed } from "../Window";
 import { Cursor } from "../../components/Cursor";
@@ -13,6 +14,7 @@ const URL = "opencrabs.com/download";
 export const Hook: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
   const lf = frame - start;
   const { vertical } = useLayout();
+  const { copy } = useCopy();
   const pump = beatPump(frame, 5);
   const urlIn = ease(lf / 6);
   const winIn = ease((lf - 16) / 6);
@@ -44,7 +46,7 @@ export const Hook: React.FC<{ frame: number; start: number }> = ({ frame, start 
           {lf < 34 && <Cursor frame={frame} color={C.orange} height={34} />}
         </Window>
       </div>
-      <Headline frame={frame} lf={lf} lines={["*~45 MB.* ONE BINARY."]} at={34} size={vertical ? 92 : 104} />
+      <Headline frame={frame} lf={lf} lines={copy.hook.headline} at={34} size={vertical ? 92 : 104} maxWidth={vertical ? 1044 : undefined} />
     </AbsoluteFill>
   );
 };

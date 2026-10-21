@@ -3,12 +3,14 @@ import { AbsoluteFill } from "remotion";
 import { C } from "../../theme";
 import { beatPump } from "../../beat";
 import { useLayout } from "../layout";
+import { useCopy } from "../LocaleContext";
 import { Headline } from "../Headline";
+import { PlanLabels } from "../../copy";
 import { ChatPanel, Bubble } from "../Chat";
 import { Logo } from "../Logo";
 
 // Drawn "photo" of a construction drawing: a blueprint floor plan, 12.0 m x 7.0 m. No stock image needed.
-const PlanPhoto: React.FC<{ w: number }> = ({ w }) => {
+const PlanPhoto: React.FC<{ w: number; labels: PlanLabels }> = ({ w, labels }) => {
   const ink = "#dbe9ff";
   const dim = { fill: ink, fontSize: 11, fontFamily: "monospace", textAnchor: "middle" as const };
   return (
@@ -32,10 +34,10 @@ const PlanPhoto: React.FC<{ w: number }> = ({ w }) => {
       </g>
       <text x="150" y="16" {...dim}>12.0 m</text>
       <text x="293" y="99" {...dim} transform="rotate(-90 293 99)">7.0 m</text>
-      <text x="90" y="100" {...dim}>LIVING</text>
-      <text x="210" y="70" {...dim}>BED 1</text>
-      <text x="210" y="130" {...dim}>BED 2</text>
-      <text x="268" y="180" {...dim} textAnchor="end" fontSize={8}>A-101 GROUND FLOOR</text>
+      <text x="90" y="100" {...dim}>{labels.living}</text>
+      <text x="210" y="70" {...dim}>{labels.bed1}</text>
+      <text x="210" y="130" {...dim}>{labels.bed2}</text>
+      <text x="268" y="180" {...dim} textAnchor="end" fontSize={8}>{labels.unit}</text>
     </svg>
   );
 };
@@ -59,11 +61,12 @@ const Voice: React.FC<{ frame: number; fs: number }> = ({ frame, fs }) => {
 export const FreeAI: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
   const lf = frame - start;
   const { vertical } = useLayout();
+  const { copy } = useCopy();
   const fs = vertical ? 34 : 30;
   const chat = (
     <ChatPanel width={vertical ? 940 : 760} height={vertical ? 1090 : 900} fs={fs}>
-      <Bubble lf={lf} at={8} mine fs={fs} pad={6}><PlanPhoto w={vertical ? 520 : 420} /></Bubble>
-      <Bubble lf={lf} at={38} fs={fs}>That's a floor plan: 3 rooms, 84 m².</Bubble>
+      <Bubble lf={lf} at={8} mine fs={fs} pad={6}><PlanPhoto w={vertical ? 520 : 420} labels={copy.free.plan} /></Bubble>
+      <Bubble lf={lf} at={38} fs={fs}>{copy.free.reply}</Bubble>
       <Bubble lf={lf} at={70} fs={fs} pad={6}>
         <div style={{ width: vertical ? 520 : 420, height: vertical ? 320 : 260, borderRadius: 14, background: "radial-gradient(circle at 50% 45%, #ffb36b 0%, #ff7a1a 45%, #7a2a08 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <Logo width={vertical ? 380 : 300} />
@@ -73,7 +76,7 @@ export const FreeAI: React.FC<{ frame: number; start: number }> = ({ frame, star
     </ChatPanel>
   );
   const head = (
-    <Headline frame={frame} lf={lf} lines={["*FREE* AI", "*FREE* VISION", "*FREE* IMAGE GEN", "*FREE* VOICE"]} ats={[14, 44, 76, 110]} size={vertical ? 96 : 104} align={vertical ? "center" : "left"} />
+    <Headline frame={frame} lf={lf} lines={copy.free.headline} ats={[14, 44, 76, 110]} size={vertical ? 96 : 104} align={vertical ? "center" : "left"} maxWidth={vertical ? 1044 : 955} />
   );
   return vertical ? (
     <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", gap: 70 }}>{chat}{head}</AbsoluteFill>

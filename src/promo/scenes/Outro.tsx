@@ -3,6 +3,7 @@ import { AbsoluteFill } from "remotion";
 import { C, FONT, FONT_MONO, TERM_FONT, RELEASE } from "../../theme";
 import { beatPump, ease } from "../../beat";
 import { useLayout } from "../layout";
+import { useCopy } from "../LocaleContext";
 import { Logo } from "../Logo";
 import { Headline } from "../Headline";
 
@@ -13,6 +14,7 @@ const CRASHES = [0, 210]; // score impacts: outro downbeat and the last bar
 export const Outro: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
   const lf = frame - start;
   const { vertical } = useLayout();
+  const { copy } = useCopy();
   const pump = beatPump(frame, 5);
   const inP = ease(lf / 10);
   const flash = CRASHES.map((c) => lf - c).filter((d) => d >= 0 && d < 8).map((d) => 1 - d / 8)[0] ?? 0;
@@ -34,11 +36,11 @@ export const Outro: React.FC<{ frame: number; start: number }> = ({ frame, start
             opencrabs.com/download
           </div>
           <div style={{ fontFamily: FONT_MONO, fontSize: vertical ? 30 : 28, letterSpacing: 2, color: C.dim }}>
-            <span style={{ color: C.orange, fontWeight: 700 }}>{RELEASE.version}</span> · ~45 MB · ONE BINARY
+            <span style={{ color: C.orange, fontWeight: 700 }}>{RELEASE.version}</span> · {copy.outro.line}
           </div>
         </div>
         <div style={{ marginTop: vertical ? 52 : 44 }}>
-          <Headline frame={frame} lf={lf} lines={vertical ? ["DOWNLOAD.", "RUN.", "*TALK.*"] : ["DOWNLOAD. RUN. *TALK.*"]} ats={vertical ? [56, 70, 84] : [56]} size={vertical ? 100 : 84} />
+          <Headline frame={frame} lf={lf} lines={vertical ? copy.outro.verbsVertical : copy.outro.verbs} ats={vertical ? [56, 70, 84] : [56]} size={vertical ? 100 : 84} maxWidth={vertical ? 1044 : 1728} />
         </div>
       </div>
       {flash > 0 && <AbsoluteFill style={{ backgroundColor: C.white, opacity: flash * 0.7 }} />}
