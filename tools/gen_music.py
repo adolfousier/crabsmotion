@@ -15,7 +15,7 @@ SR = 44100
 BPM = 120.0
 BEAT = 60.0 / BPM          # 0.5s
 BAR = BEAT * 4             # 2.0s
-DURATION = 48.0
+DURATION = 56.0
 N = int(SR * DURATION)     # total samples
 
 random.seed(1337)
@@ -218,9 +218,9 @@ for i in range(rn):
     riser[i] = (random.random() * 2 - 1) * env * 0.3
 add(0.0, riser, 0.25)
 
-# ---- impacts: outro downbeat (bar 19) and the last bar ----
-OUTRO_BAR = 19
-for crash_t in (OUTRO_BAR * BAR, (total_bars - 1) * BAR):
+# ---- impacts: WHAT'S NEW downbeat (bar 17), outro downbeat (bar 25), last bar ----
+CRASH_BARS = (16, 24)
+for crash_t in tuple(b * BAR for b in CRASH_BARS) + ((total_bars - 1) * BAR,):
     cdur = 1.4
     cn = int(cdur * SR)
     crash = [0.0] * cn
@@ -232,6 +232,11 @@ for crash_t in (OUTRO_BAR * BAR, (total_bars - 1) * BAR):
     kick(crash_t, 1.2)
 
 # ---- master: soft clip + normalize -------------------------------------
+# gentle tail fade so the last crash decays instead of cutting dead
+fade_n = int(0.7 * SR)
+for i in range(max(0, N - fade_n), N):
+    buf[i] *= (N - i) / fade_n
+
 peak = 0.0
 for i in range(N):
     v = math.tanh(buf[i] * 1.4)  # soft saturation
