@@ -51,24 +51,35 @@ export const FPS = 30;
 export const BPM = 120;
 export const BEAT_FRAMES = 15; // 0.5s
 export const BAR_FRAMES = 60; // 2.0s
-export const DURATION_FRAMES = 1440; // 48s, 24 bars
+export const DURATION_FRAMES = 1680; // 56s, 28 bars
 export const WIDTH = 1920;
 export const HEIGHT = 1080;
+
+// The release this promo ships with. Every on-screen number comes from here.
+export const RELEASE = {
+  version: "v0.5.12",
+  features: 8,
+  fixes: 46,
+  commits: 78,
+  tests: 11091,
+  contributors: 6,
+};
 
 // Promo timeline in global frames. Every scene starts on a bar downbeat.
 const bar = (n: number) => (n - 1) * BAR_FRAMES;
 export const T = {
-  hook: bar(1),
-  logo: bar(2),
-  setup: bar(3),
-  free: bar(5),
-  errand: bar(8),
-  plan: bar(12),
-  cowork: bar(15),
-  everywhere: bar(17),
-  numbers: bar(18),
-  outro: bar(20), // score crash lands here
-  end: bar(25),
+  drop: bar(1), // the version itself: v0.5.12 JUST DROPPED
+  hook: bar(3), // how to get it
+  setup: bar(5),
+  free: bar(7),
+  errand: bar(10),
+  plan: bar(14),
+  whatsnew: bar(17), // the 8 features of this release
+  cowork: bar(20),
+  everywhere: bar(22),
+  numbers: bar(23),
+  outro: bar(25), // score crash lands here
+  end: bar(29),
 };
 
 export type Capability = { word: string; sub: string; accent: string };

@@ -2,32 +2,35 @@ import React from "react";
 import { AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { C, T } from "../theme";
 import { Background } from "../components/Background";
+import { Drop } from "./scenes/Drop";
 import { Hook } from "./scenes/Hook";
-import { LogoHit } from "./scenes/LogoHit";
 import { Setup } from "./scenes/Setup";
 import { FreeAI } from "./scenes/FreeAI";
 import { Errand } from "./scenes/Errand";
 import { Plan } from "./scenes/Plan";
+import { WhatsNew } from "./scenes/WhatsNew";
 import { Cowork } from "./scenes/Cowork";
 import { Everywhere } from "./scenes/Everywhere";
 import { Numbers } from "./scenes/Numbers";
 import { Outro } from "./scenes/Outro";
+import { VersionBadge } from "./VersionBadge";
 
 // Scene order on the shared 120 BPM grid; each runs until the next one starts.
 const SCENES: [number, React.FC<{ frame: number; start: number }>][] = [
+  [T.drop, Drop],
   [T.hook, Hook],
-  [T.logo, LogoHit],
   [T.setup, Setup],
   [T.free, FreeAI],
   [T.errand, Errand],
   [T.plan, Plan],
+  [T.whatsnew, WhatsNew],
   [T.cowork, Cowork],
   [T.everywhere, Everywhere],
   [T.numbers, Numbers],
   [T.outro, Outro],
 ];
 
-/** v0.5.10 release promo: same timeline for the 16:9 and 9:16 cuts. */
+/** v0.5.12 release promo: same timeline for the 16:9 and 9:16 cuts. */
 export const Promo: React.FC = () => {
   const frame = useCurrentFrame();
   return (
@@ -42,6 +45,9 @@ export const Promo: React.FC = () => {
           </Sequence>
         );
       })}
+      <Sequence from={T.hook} durationInFrames={T.end - T.hook}>
+        <VersionBadge lf={frame - T.hook} />
+      </Sequence>
     </AbsoluteFill>
   );
 };
