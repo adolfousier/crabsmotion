@@ -4,6 +4,7 @@ import { C, FONT, FONT_MONO, RELEASE } from "../../theme";
 import { beatPump, ease } from "../../beat";
 import { useLayout } from "../layout";
 import { useCopy } from "../LocaleContext";
+import { resolveLabel } from "../../copy";
 import { measureMono } from "../textFit";
 import { Logo } from "../Logo";
 
@@ -13,10 +14,10 @@ export const Drop: React.FC<{ frame: number; start: number }> = ({ frame, start 
   const { vertical, width } = useLayout();
   const { copy, n } = useCopy();
   const stats = [
-    { v: `${RELEASE.features}`, l: copy.drop.features },
-    { v: `${RELEASE.fixes}`, l: copy.drop.fixes },
-    { v: `${RELEASE.commits}`, l: copy.drop.commits },
-    { v: n(RELEASE.tests), l: copy.drop.tests },
+    { v: `${RELEASE.features}`, l: resolveLabel(copy.drop.features, RELEASE.features) },
+    { v: `${RELEASE.fixes}`, l: resolveLabel(copy.drop.fixes, RELEASE.fixes) },
+    { v: `${RELEASE.commits}`, l: resolveLabel(copy.drop.commits, RELEASE.commits) },
+    { v: n(RELEASE.tests), l: resolveLabel(copy.drop.tests, RELEASE.tests) },
   ];
   const pump = beatPump(frame, 5);
   const flash = lf < 7 ? 1 - lf / 7 : 0;

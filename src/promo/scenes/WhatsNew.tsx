@@ -4,6 +4,7 @@ import { C, FONT, FONT_MONO, K, RELEASE, TERM_FONT } from "../../theme";
 import { ease } from "../../beat";
 import { useLayout } from "../layout";
 import { useCopy } from "../LocaleContext";
+import { resolveLabel } from "../../copy";
 
 // The 8 features of this release, one per beat. Wording follows the release notes.
 
@@ -14,7 +15,7 @@ const EVERY = 15; // one beat apart
 export const WhatsNew: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
   const lf = frame - start;
   const { vertical } = useLayout();
-  const { copy, n } = useCopy();
+  const { copy } = useCopy();
   const features = copy.whatsnew.features;
   const fs = vertical ? 30 : 38;
   const width = vertical ? 980 : 1080;
@@ -40,7 +41,8 @@ export const WhatsNew: React.FC<{ frame: number; start: number }> = ({ frame, st
             {copy.whatsnew.title(RELEASE.version)}
           </span>
           <span style={{ color: C.dim, fontSize: fs * 0.8, letterSpacing: 2 }}>
-            <span style={{ color: C.white, fontWeight: 700 }}>{RELEASE.features}</span> {copy.whatsnew.label}
+            <span style={{ color: C.white, fontWeight: 700 }}>{RELEASE.features}</span>{" "}
+            {resolveLabel(copy.whatsnew.label, RELEASE.features)}
           </span>
         </div>
 
@@ -107,7 +109,7 @@ export const WhatsNew: React.FC<{ frame: number; start: number }> = ({ frame, st
         </div>
 
         <div style={{ marginTop: fs * 0.9, fontFamily: TERM_FONT, fontSize: fs * 0.66, color: C.dim, letterSpacing: 1 }}>
-          {copy.whatsnew.footer(`${RELEASE.fixes}`, `${RELEASE.commits}`, n(RELEASE.tests))}
+          {copy.whatsnew.footer(RELEASE.fixes, RELEASE.commits, RELEASE.tests)}
         </div>
       </div>
     </AbsoluteFill>

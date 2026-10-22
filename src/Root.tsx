@@ -12,6 +12,10 @@ const CUTS: { id: string; locale: Locale; vertical?: boolean }[] = [
   { id: "CrabMotionPTVertical", locale: "pt", vertical: true },
   { id: "CrabMotionID", locale: "id" },
   { id: "CrabMotionIDVertical", locale: "id", vertical: true },
+  { id: "CrabMotionFR", locale: "fr" },
+  { id: "CrabMotionFRVertical", locale: "fr", vertical: true },
+  { id: "CrabMotionRU", locale: "ru" },
+  { id: "CrabMotionRUVertical", locale: "ru", vertical: true },
 ];
 
 export const RemotionRoot: React.FC = () => (

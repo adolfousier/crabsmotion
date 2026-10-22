@@ -1,13 +1,21 @@
 import { loadFont as loadGrotesk } from "@remotion/google-fonts/SpaceGrotesk";
 import { loadFont as loadMono } from "@remotion/google-fonts/SpaceMono";
+// Space Grotesk and Space Mono ship no Cyrillic, so Russian falls back glyph by
+// glyph to Golos Text and JetBrains Mono. Latin still renders in the brand faces.
+import { loadFont as loadCyrDisplay } from "@remotion/google-fonts/GolosText";
+import { loadFont as loadCyrMono } from "@remotion/google-fonts/JetBrainsMono";
 
 const { fontFamily: grotesk } = loadGrotesk("normal", {
   weights: ["400", "500", "600", "700"],
 });
 const { fontFamily: mono } = loadMono("normal", { weights: ["400", "700"] });
+const { fontFamily: cyrDisplay } = loadCyrDisplay("normal", {
+  weights: ["400", "700"],
+});
+const { fontFamily: cyrMono } = loadCyrMono("normal", { weights: ["400", "700"] });
 
-export const FONT = grotesk;
-export const FONT_MONO = mono;
+export const FONT = `${grotesk}, ${cyrDisplay}, sans-serif`;
+export const FONT_MONO = `${mono}, ${cyrMono}, monospace`;
 
 // ---- palette: minimalist tech, monochrome + crab-coral accent ----
 export const C = {

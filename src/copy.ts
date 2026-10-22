@@ -2,19 +2,35 @@
 // LocaleContext so the same composition tree renders en, pt-PT or id.
 // Wording matches the release notes; numbers stay in RELEASE (theme.ts).
 
-export type Locale = "en" | "pt" | "id";
+export type Locale = "en" | "pt" | "id" | "fr" | "ru";
 
-export const LOCALES: Locale[] = ["en", "pt", "id"];
+export const LOCALES: Locale[] = ["en", "pt", "id", "fr", "ru"];
 
 export type PlanLabels = { living: string; bed1: string; bed2: string; unit: string };
+
+// A label that follows a number needs plural agreement in Russian ("8 фич" but
+// "2 фичи"). Locales without that problem keep a plain string.
+export type CountLabel = string | ((n: number) => string);
+
+export const resolveLabel = (label: CountLabel, n: number): string =>
+  typeof label === "function" ? label(n) : label;
+
+// Russian plural rule: 1 фича, 2 фичи, 5 фич, 11 фич, 21 фича.
+export const ruPlural = (n: number, one: string, few: string, many: string): string => {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+  return many;
+};
 
 export type Copy = {
   drop: {
     justDropped: string;
-    features: string;
-    fixes: string;
-    commits: string;
-    tests: string;
+    features: CountLabel;
+    fixes: CountLabel;
+    commits: CountLabel;
+    tests: CountLabel;
   };
   hook: { headline: string[] };
   setup: { ask: string; headline: string[] };
@@ -36,9 +52,9 @@ export type Copy = {
   };
   whatsnew: {
     title: (version: string) => string;
-    label: string;
+    label: CountLabel;
     features: string[];
-    footer: (fixes: string, commits: string, tests: string) => string;
+    footer: (fixes: number, commits: number, tests: number) => string;
   };
   cowork: { joined: string; headline: string[] };
   numbers: {
@@ -92,7 +108,8 @@ const en: Copy = {
       "Headless install: provider day zero",
       "4 phantom fixes · 4 security fixes",
     ],
-    footer: (fixes, commits, tests) => `${fixes} FIXES · ${commits} COMMITS · ${tests} TESTS`,
+    footer: (fixes, commits, tests) =>
+      `${formatNumber(fixes, "en")} FIXES · ${formatNumber(commits, "en")} COMMITS · ${formatNumber(tests, "en")} TESTS`,
   },
   cowork: { joined: " joined", headline: ["BRING YOUR", "*FRIENDS.*"] },
   numbers: {
@@ -150,7 +167,8 @@ const pt: Copy = {
       "Instalação headless: provider dia zero",
       "4 correções fantasma · 4 segurança",
     ],
-    footer: (fixes, commits, tests) => `${fixes} CORREÇÕES · ${commits} COMMITS · ${tests} TESTES`,
+    footer: (fixes, commits, tests) =>
+      `${formatNumber(fixes, "pt")} CORREÇÕES · ${formatNumber(commits, "pt")} COMMITS · ${formatNumber(tests, "pt")} TESTES`,
   },
   cowork: { joined: " entrou", headline: ["TRAZ OS TEUS", "*AMIGOS.*"] },
   numbers: {
@@ -208,7 +226,8 @@ const id: Copy = {
       "Instal headless: provider hari nol",
       "4 fix hantu · 4 fix keamanan",
     ],
-    footer: (fixes, commits, tests) => `${fixes} PERBAIKAN · ${commits} COMMIT · ${tests} TES`,
+    footer: (fixes, commits, tests) =>
+      `${formatNumber(fixes, "id")} PERBAIKAN · ${formatNumber(commits, "id")} COMMIT · ${formatNumber(tests, "id")} TES`,
   },
   cowork: { joined: " bergabung", headline: ["BAWA TEMAN", "*KAMU.*"] },
   numbers: {
@@ -226,12 +245,139 @@ const id: Copy = {
   },
 };
 
-export const COPY: Record<Locale, Copy> = { en, pt, id };
+const fr: Copy = {
+  drop: { justDropped: "VIENT DE SORTIR", features: "NOUVEAUTÉS", fixes: "CORRECTIONS", commits: "COMMITS", tests: "TESTS" },
+  hook: { headline: ["*~45 MB.* UN SEUL BINAIRE."] },
+  setup: {
+    ask: "Salut ! Je suis ton crabe. Comment tu t'appelles ?",
+    headline: ["SANS COMPTE.", "SANS CLÉS.", "*PARLE.*"],
+  },
+  free: {
+    reply: "C'est un plan : 3 pièces, 84 m².",
+    plan: { living: "SALON", bed1: "CHAMBRE 1", bed2: "CHAMBRE 2", unit: "A-101 REZ-DE-CHAUSSÉE" },
+    headline: ["IA *GRATUITE*", "VISION *GRATUITE*", "IMAGE *GRATUITE*", "VOIX *GRATUITE*"],
+  },
+  errand: {
+    ask: "commande-moi une bouteille de butane 13kg chez gazmondego, livraison le matin",
+    steps: ["ouverture de gazmondego.com", "remplissage du formulaire"],
+    price: "Butane 13kg x1 · 39,90 €",
+    sent: "COMMANDE ENVOYÉE ✓",
+    delivered: "livrée.",
+    headline: ["IL FAIT TES", "COURSES.", "*POUR DE VRAI.*"],
+  },
+  plan: {
+    title: "Plan · Lancer la landing page",
+    step: (s, total) => `Étape ${s}/${total}`,
+    calls: (c) => `${c} appels d'outils`,
+    clock: ["9m", "6h", "2 j"],
+    headline: ["TOURNE DES *HEURES.*", "TOURNE DES *JOURS.*", "SANS SURVEILLANCE."],
+  },
+  whatsnew: {
+    title: (v) => `NOUVEAUTÉS DE ${v}`,
+    label: "NOUVEAUTÉS",
+    features: [
+      "Les invités Telegram ont tout",
+      "Un tour annulable par invité",
+      "Les longs tours écrivent un plan",
+      "browser_act envoie des fichiers",
+      "bash ne dort plus en pleine tâche",
+      "Le transcript survit à la bascule",
+      "Install headless : provider jour zéro",
+      "4 corrections fantômes · 4 sécu",
+    ],
+    footer: (fixes, commits, tests) =>
+      `${formatNumber(fixes, "fr")} CORRECTIONS · ${formatNumber(commits, "fr")} COMMITS · ${formatNumber(tests, "fr")} TESTS`,
+  },
+  cowork: { joined: " a rejoint", headline: ["AMÈNE TES", "*AMIS.*"] },
+  numbers: {
+    title: "EN CHIFFRES",
+    commits: "COMMITS",
+    fixes: "CORRECTIONS",
+    tests: "TESTS",
+    features: "NOUVEAUTÉS",
+    contributors: "CONTRIBUTEURS",
+  },
+  outro: {
+    line: "~45 MB · UN SEUL BINAIRE",
+    verbs: ["TÉLÉCHARGE. LANCE. *PARLE.*"],
+    verbsVertical: ["TÉLÉCHARGE.", "LANCE.", "*PARLE.*"],
+  },
+};
 
-// en-US groups with commas, pt-PT and Indonesian with dots. Hand-rolled so the
-// render never depends on which ICU data the box happens to ship.
+const ru: Copy = {
+  drop: {
+    justDropped: "ТОЛЬКО ВЫШЕЛ",
+    features: (n) => ruPlural(n, "ФИЧА", "ФИЧИ", "ФИЧ"),
+    fixes: (n) => ruPlural(n, "ФИКС", "ФИКСА", "ФИКСОВ"),
+    commits: (n) => ruPlural(n, "КОММИТ", "КОММИТА", "КОММИТОВ"),
+    tests: (n) => ruPlural(n, "ТЕСТ", "ТЕСТА", "ТЕСТОВ"),
+  },
+  hook: { headline: ["*~45 MB.* ОДИН БИНАРНИК."] },
+  setup: {
+    ask: "Привет! Я твой краб. Как тебя зовут?",
+    headline: ["БЕЗ АККАУНТА.", "БЕЗ КЛЮЧЕЙ.", "*ПРОСТО ГОВОРИ.*"],
+  },
+  free: {
+    reply: "Это план этажа: 3 комнаты, 84 м².",
+    plan: { living: "ГОСТИНАЯ", bed1: "СПАЛЬНЯ 1", bed2: "СПАЛЬНЯ 2", unit: "A-101 ПЕРВЫЙ ЭТАЖ" },
+    headline: ["ИИ *БЕСПЛАТНО*", "ЗРЕНИЕ *БЕСПЛАТНО*", "КАРТИНКИ *БЕСПЛАТНО*", "ГОЛОС *БЕСПЛАТНО*"],
+  },
+  errand: {
+    ask: "закажи баллон бутана 13кг на gazmondego, доставка утром",
+    steps: ["открываю gazmondego.com", "заполняю форму заказа"],
+    price: "Бутан 13кг x1 · 39,90 €",
+    sent: "ЗАКАЗ ОТПРАВЛЕН ✓",
+    delivered: "доставлено.",
+    headline: ["ОН ДЕЛАЕТ ТВОИ", "ДЕЛА.", "*ПО-НАСТОЯЩЕМУ.*"],
+  },
+  plan: {
+    title: "План · Запустить лендинг",
+    step: (s, total) => `Шаг ${s}/${total}`,
+    calls: (c) => `${c} вызовов инструментов`,
+    clock: ["9м", "6ч", "2 дня"],
+    headline: ["РАБОТАЕТ *ЧАСАМИ.*", "РАБОТАЕТ *ДНЯМИ.*", "БЕЗ ПРИСМОТРА."],
+  },
+  whatsnew: {
+    title: (v) => `ЧТО НОВОГО В ${v}`,
+    label: (n) => ruPlural(n, "ФИЧА", "ФИЧИ", "ФИЧ"),
+    features: [
+      "Гости Telegram получают всё",
+      "Один отменяемый ход на гостя",
+      "Долгие ходы пишут план",
+      "browser_act грузит файлы",
+      "bash не засыпает посреди задачи",
+      "Транскрипт живёт при смене сессии",
+      "Headless: провайдер в день ноль",
+      "4 фикса фантомов · 4 по безопасности",
+    ],
+    footer: (fixes, commits, tests) =>
+      `${formatNumber(fixes, "ru")} ${ruPlural(fixes, "ФИКС", "ФИКСА", "ФИКСОВ")} · ` +
+      `${formatNumber(commits, "ru")} ${ruPlural(commits, "КОММИТ", "КОММИТА", "КОММИТОВ")} · ` +
+      `${formatNumber(tests, "ru")} ${ruPlural(tests, "ТЕСТ", "ТЕСТА", "ТЕСТОВ")}`,
+  },
+  cowork: { joined: " присоединился", headline: ["ЗОВИ СВОИХ", "*ДРУЗЕЙ.*"] },
+  numbers: {
+    title: "В ЦИФРАХ",
+    commits: "КОММИТЫ",
+    fixes: "ФИКСЫ",
+    tests: "ТЕСТЫ",
+    features: "ФИЧИ",
+    contributors: "УЧАСТНИКИ",
+  },
+  outro: {
+    line: "~45 MB · ОДИН БИНАРНИК",
+    verbs: ["СКАЧАЙ. ЗАПУСТИ. *ГОВОРИ.*"],
+    verbsVertical: ["СКАЧАЙ.", "ЗАПУСТИ.", "*ГОВОРИ.*"],
+  },
+};
+
+export const COPY: Record<Locale, Copy> = { en, pt, id, fr, ru };
+
+// en-US groups with commas, pt-PT and Indonesian with dots, French and Russian
+// with a non-breaking space. Hand-rolled so the render never depends on which
+// ICU data the box happens to ship.
 export const formatNumber = (value: number, locale: Locale): string => {
   const digits = Math.round(value).toString();
-  const sep = locale === "en" ? "," : ".";
+  const sep = locale === "en" ? "," : locale === "fr" || locale === "ru" ? "\u00A0" : ".";
   return digits.replace(/\B(?=(\d{3})+(?!\d))/g, sep);
 };
