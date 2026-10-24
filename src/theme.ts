@@ -65,18 +65,18 @@ export const HEIGHT = 1080;
 
 // The release this promo ships with. Every on-screen number comes from here.
 export const RELEASE = {
-  version: "v0.5.12",
-  features: 8,
-  fixes: 46,
-  commits: 78,
-  tests: 11091,
-  contributors: 6,
+  version: "v0.5.13",
+  features: 2,
+  fixes: 52,
+  commits: 61,
+  tests: 11333,
+  contributors: 5,
 };
 
 // Promo timeline in global frames. Every scene starts on a bar downbeat.
 const bar = (n: number) => (n - 1) * BAR_FRAMES;
 export const T = {
-  drop: bar(1), // the version itself: v0.5.12 JUST DROPPED
+  drop: bar(1), // the version itself: v0.5.13 JUST DROPPED
   hook: bar(3), // how to get it
   setup: bar(5),
   free: bar(7),

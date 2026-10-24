@@ -4,7 +4,7 @@ import { COPY, Copy, Locale, formatNumber } from "../copy";
 type LocaleValue = {
   locale: Locale;
   copy: Copy;
-  /** Locale-aware thousands separator: 11,091 in en, 11.091 in pt and id. */
+  /** Locale-aware thousands separator: 11,333 in en, 11.333 in pt and id. */
   n: (value: number) => string;
 };
 

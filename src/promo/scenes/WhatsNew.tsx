@@ -6,18 +6,25 @@ import { useLayout } from "../layout";
 import { useCopy } from "../LocaleContext";
 import { resolveLabel } from "../../copy";
 
-// The 8 features of this release, one per beat. Wording follows the release notes.
+// This release's highlights, one per beat. Wording follows the release notes.
 
 const AT = 10; // first row
-const EVERY = 15; // one beat apart
+const LAND_BY = 150; // every row is on screen by this frame
 
-/** Bars 17-19: WHAT'S NEW, the release's own feature list. This is the release drop. */
+/** Bars 17-19: WHAT'S NEW, the release's own highlight list. This is the release drop. */
 export const WhatsNew: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
   const lf = frame - start;
-  const { vertical } = useLayout();
+  const { height, vertical } = useLayout();
   const { copy } = useCopy();
   const features = copy.whatsnew.features;
-  const fs = vertical ? 30 : 38;
+  const rows = features.length;
+  // A release can land more or fewer highlights than the last one, so the row
+  // spacing and the type size both come off the row count. The height budget
+  // keeps the card inside the frame instead of spilling off the bottom.
+  const EVERY = Math.max(9, Math.min(15, Math.floor((LAND_BY - AT) / Math.max(1, rows - 1))));
+  const baseFs = vertical ? 30 : 38;
+  const budget = height * (vertical ? 0.62 : 0.86);
+  const fs = Math.min(baseFs, (budget - 4) / (6.39 + 1.92 * rows));
   const width = vertical ? 980 : 1080;
   const headIn = ease(lf / 8);
   const landed = features.filter((_, i) => lf >= AT + i * EVERY).length;
@@ -41,12 +48,12 @@ export const WhatsNew: React.FC<{ frame: number; start: number }> = ({ frame, st
             {copy.whatsnew.title(RELEASE.version)}
           </span>
           <span style={{ color: C.dim, fontSize: fs * 0.8, letterSpacing: 2 }}>
-            <span style={{ color: C.white, fontWeight: 700 }}>{RELEASE.features}</span>{" "}
-            {resolveLabel(copy.whatsnew.label, RELEASE.features)}
+            <span style={{ color: C.white, fontWeight: 700 }}>{features.length}</span>{" "}
+            {resolveLabel(copy.whatsnew.label, features.length)}
           </span>
         </div>
 
-        {/* 8 segments, one lights per landed feature */}
+        {/* one segment per highlight, each lights as its row lands */}
         <div style={{ display: "flex", gap: 6, marginTop: fs * 0.7, marginBottom: fs * 0.9 }}>
           {features.map((_, i) => (
             <div
