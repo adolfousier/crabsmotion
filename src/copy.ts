@@ -59,11 +59,11 @@ export type Copy = {
   cowork: { joined: string; headline: string[] };
   numbers: {
     title: string;
-    commits: string;
-    fixes: string;
-    tests: string;
-    features: string;
-    contributors: string;
+    commits: CountLabel;
+    fixes: CountLabel;
+    tests: CountLabel;
+    features: CountLabel;
+    contributors: CountLabel;
   };
   outro: { line: string; verbs: string[]; verbsVertical: string[] };
 };
@@ -99,15 +99,15 @@ const en: Copy = {
     title: (v) => `WHAT'S NEW IN ${v}`,
     label: "HIGHLIGHTS",
     features: [
-      "One task, one row in every channel",
-      "Telegram answers in one bubble",
-      "Discord: 9 hardening fixes",
-      "WhatsApp folds split sessions back",
-      "Connect timeouts name what failed",
-      "Full screen sessions and help dialogs",
-      "Installer leaves a callable command",
-      "hashline refs widened to six chars",
-      "A lost install token can't mint a user",
+      "Arabic pack with script detection",
+      "Chinese: Simplified and Traditional",
+      "CJK detection spares Japanese, Korean",
+      "European Portuguese speech understood",
+      "Non-English packs at 400+ phrases",
+      "edit_file keeps the final newline",
+      "hashline_edit keeps the line ending",
+      "CI fails on byte slices that panic",
+      "Actions and toolchain pinned",
     ],
     footer: (fixes, commits, tests) =>
       `${formatNumber(fixes, "en")} FIXES · ${formatNumber(commits, "en")} COMMITS · ${formatNumber(tests, "en")} TESTS`,
@@ -159,15 +159,15 @@ const pt: Copy = {
     title: (v) => `NOVIDADES NA ${v}`,
     label: "DESTAQUES",
     features: [
-      "Uma tarefa, uma linha em cada canal",
-      "Telegram responde numa só bolha",
-      "Discord: 9 correções de robustez",
-      "WhatsApp junta sessões divididas",
-      "Erro de ligação diz o que falhou",
-      "Sessões e ajuda em ecrã inteiro",
-      "Instalador deixa o comando opencrabs",
-      "Refs hashline com seis caracteres",
-      "Token perdido nunca cria outro user",
+      "Pacote árabe com deteção de escrita",
+      "Chinês: simplificado e tradicional",
+      "Deteção CJK poupa japonês e coreano",
+      "Português europeu falado entendido",
+      "Pacotes não ingleses com 400+ frases",
+      "edit_file já não come a última linha",
+      "hashline_edit mantém o fim de linha",
+      "CI falha em slices que podem entrar em pânico",
+      "Actions e toolchain fixados",
     ],
     footer: (fixes, commits, tests) =>
       `${formatNumber(fixes, "pt")} CORREÇÕES · ${formatNumber(commits, "pt")} COMMITS · ${formatNumber(tests, "pt")} TESTES`,
@@ -219,15 +219,15 @@ const id: Copy = {
     title: (v) => `YANG BARU DI ${v}`,
     label: "SOROTAN",
     features: [
-      "Satu tugas, satu baris di tiap kanal",
-      "Telegram jawab dalam satu balon",
-      "Discord: 9 perbaikan ketahanan",
-      "WhatsApp gabung sesi yang terpecah",
-      "Timeout koneksi bilang apa yang gagal",
-      "Sesi dan bantuan layar penuh",
-      "Installer tinggalkan perintah opencrabs",
-      "Ref hashline jadi enam karakter",
-      "Token hilang tak bisa bikin user baru",
+      "Paket Arab dengan deteksi aksara",
+      "Tionghoa: Sederhana dan Tradisional",
+      "Deteksi CJK tak sentuh Jepang, Korea",
+      "Bahasa Portugal Eropa dipahami",
+      "Paket non-Inggris 400+ frasa",
+      "edit_file tak makan baris terakhir",
+      "hashline_edit jaga akhir baris file",
+      "CI gagal pada slice yang bisa panic",
+      "Actions dan toolchain dipin",
     ],
     footer: (fixes, commits, tests) =>
       `${formatNumber(fixes, "id")} PERBAIKAN · ${formatNumber(commits, "id")} COMMIT · ${formatNumber(tests, "id")} TES`,
@@ -279,15 +279,15 @@ const fr: Copy = {
     title: (v) => `NOUVEAUTÉS DE ${v}`,
     label: "POINTS CLÉS",
     features: [
-      "Une tâche, une ligne par canal",
-      "Telegram répond en une bulle",
-      "Discord : 9 correctifs de robustesse",
-      "WhatsApp fusionne les sessions",
-      "Le timeout dit ce qui a échoué",
-      "Sessions et aide en plein écran",
-      "L'installeur pose la commande opencrabs",
-      "Refs hashline en six caractères",
-      "Un token perdu ne crée plus d'user",
+      "Pack arabe avec détection d'écriture",
+      "Chinois : simplifié et traditionnel",
+      "La détection CJK épargne le japonais",
+      "Portugais européen compris à l'oral",
+      "Packs non anglais à 400+ phrases",
+      "edit_file garde le dernier saut de ligne",
+      "hashline_edit garde le saut de ligne",
+      "CI échoue sur un slice qui panique",
+      "Actions et toolchain épinglés",
     ],
     footer: (fixes, commits, tests) =>
       `${formatNumber(fixes, "fr")} CORRECTIONS · ${formatNumber(commits, "fr")} COMMITS · ${formatNumber(tests, "fr")} TESTS`,
@@ -345,15 +345,15 @@ const ru: Copy = {
     title: (v) => `ЧТО НОВОГО В ${v}`,
     label: (n) => ruPlural(n, "ПУНКТ", "ПУНКТА", "ПУНКТОВ"),
     features: [
-      "Одна задача, одна строка",
-      "Telegram: ответ в одном пузыре",
-      "Discord: 9 фиксов надёжности",
-      "WhatsApp склеивает сессии",
-      "Таймаут скажет, что упало",
-      "Сессии и помощь на весь экран",
-      "Инсталлер ставит команду в PATH",
-      "Теги hashline: шесть знаков",
-      "Потерянный токен не создаст юзера",
+      "Арабский пакет с определением письма",
+      "Китайский: упрощённый и традиционный",
+      "CJK не трогает японский и корейский",
+      "Португальский (Европа) понимается",
+      "Не-английские пакеты: 400+ фраз",
+      "edit_file не режет конец файла",
+      "hashline_edit хранит конец строки",
+      "CI падает на срезе с паникой",
+      "Actions и toolchain закреплены",
     ],
     footer: (fixes, commits, tests) =>
       `${formatNumber(fixes, "ru")} ${ruPlural(fixes, "ФИКС", "ФИКСА", "ФИКСОВ")} · ` +
@@ -363,11 +363,11 @@ const ru: Copy = {
   cowork: { joined: " присоединился", headline: ["ЗОВИ СВОИХ", "*ДРУЗЕЙ.*"] },
   numbers: {
     title: "В ЦИФРАХ",
-    commits: "КОММИТЫ",
-    fixes: "ФИКСЫ",
-    tests: "ТЕСТЫ",
-    features: "ФИЧИ",
-    contributors: "УЧАСТНИКИ",
+    commits: (n) => ruPlural(n, "КОММИТ", "КОММИТА", "КОММИТОВ"),
+    fixes: (n) => ruPlural(n, "ФИКС", "ФИКСА", "ФИКСОВ"),
+    tests: (n) => ruPlural(n, "ТЕСТ", "ТЕСТА", "ТЕСТОВ"),
+    features: (n) => ruPlural(n, "ФИЧА", "ФИЧИ", "ФИЧ"),
+    contributors: (n) => ruPlural(n, "УЧАСТНИК", "УЧАСТНИКА", "УЧАСТНИКОВ"),
   },
   outro: {
     line: "~45 MB · ОДИН БИНАРНИК",

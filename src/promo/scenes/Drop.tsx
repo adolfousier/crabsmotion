@@ -8,7 +8,7 @@ import { resolveLabel } from "../../copy";
 import { measureMono } from "../textFit";
 import { Logo } from "../Logo";
 
-/** Bars 1-2: the release itself, up front. v0.5.13, JUST DROPPED, then the counts. */
+/** Bars 1-2: the release itself, up front. Version, JUST DROPPED, then the counts. */
 export const Drop: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
   const lf = frame - start;
   const { vertical, width } = useLayout();

@@ -4,6 +4,7 @@ import { C, FONT, FONT_MONO, RELEASE } from "../../theme";
 import { beatPump, ease } from "../../beat";
 import { useLayout } from "../layout";
 import { useCopy } from "../LocaleContext";
+import { resolveLabel } from "../../copy";
 
 /** Bars 23-24: the release in numbers, version first. */
 export const Numbers: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
@@ -12,9 +13,9 @@ export const Numbers: React.FC<{ frame: number; start: number }> = ({ frame, sta
   const { copy, n } = useCopy();
   // Release numbers, straight from the release notes.
   const NUMS = [
-    { to: RELEASE.commits, label: copy.numbers.commits },
-    { to: RELEASE.fixes, label: copy.numbers.fixes },
-    { to: RELEASE.tests, label: copy.numbers.tests },
+    { to: RELEASE.commits, label: resolveLabel(copy.numbers.commits, RELEASE.commits) },
+    { to: RELEASE.fixes, label: resolveLabel(copy.numbers.fixes, RELEASE.fixes) },
+    { to: RELEASE.tests, label: resolveLabel(copy.numbers.tests, RELEASE.tests) },
   ];
   const pump = beatPump(frame, 5);
   const size = vertical ? 170 : 150;
@@ -51,8 +52,8 @@ export const Numbers: React.FC<{ frame: number; start: number }> = ({ frame, sta
       </div>
 
       <div style={{ fontFamily: FONT_MONO, fontSize: vertical ? 30 : 28, letterSpacing: 3, color: C.dim, opacity: subIn }}>
-        <span style={{ color: C.white, fontWeight: 700 }}>{RELEASE.features}</span> {copy.numbers.features} ·{" "}
-        <span style={{ color: C.white, fontWeight: 700 }}>{RELEASE.contributors}</span> {copy.numbers.contributors}
+        <span style={{ color: C.white, fontWeight: 700 }}>{RELEASE.features}</span> {resolveLabel(copy.numbers.features, RELEASE.features)} ·{" "}
+        <span style={{ color: C.white, fontWeight: 700 }}>{RELEASE.contributors}</span> {resolveLabel(copy.numbers.contributors, RELEASE.contributors)}
       </div>
     </AbsoluteFill>
   );

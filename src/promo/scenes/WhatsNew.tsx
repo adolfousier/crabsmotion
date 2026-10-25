@@ -5,6 +5,7 @@ import { ease } from "../../beat";
 import { useLayout } from "../layout";
 import { useCopy } from "../LocaleContext";
 import { resolveLabel } from "../../copy";
+import { measureLine } from "../textFit";
 
 // This release's highlights, one per beat. Wording follows the release notes.
 
@@ -26,6 +27,17 @@ export const WhatsNew: React.FC<{ frame: number; start: number }> = ({ frame, st
   const budget = height * (vertical ? 0.62 : 0.86);
   const fs = Math.min(baseFs, (budget - 4) / (6.39 + 1.92 * rows));
   const width = vertical ? 980 : 1080;
+  // Rows are set nowrap, so a translation longer than the last release's would
+  // run off the card. Measure with the real advance width and shrink every row
+  // together, so the list stays even instead of one line dropping a size.
+  const cardPad = fs * 1.5 * 2;
+  const rowChrome = fs * (1.5 + 0.85); // number column plus the gap to the text
+  const avail = width - cardPad - rowChrome;
+  const fitScale = Math.min(
+    1,
+    ...features.map((f) => avail / measureLine(f, fs, 0)),
+  );
+  const rowFs = fs * fitScale;
   const headIn = ease(lf / 8);
   const landed = features.filter((_, i) => lf >= AT + i * EVERY).length;
 
@@ -102,7 +114,7 @@ export const WhatsNew: React.FC<{ frame: number; start: number }> = ({ frame, st
                   style={{
                     fontFamily: FONT,
                     fontWeight: 500,
-                    fontSize: fs,
+                    fontSize: rowFs,
                     color: C.text,
                     whiteSpace: "nowrap",
                     letterSpacing: -0.2,

@@ -32,7 +32,7 @@ const SCENES: [number, React.FC<{ frame: number; start: number }>][] = [
   [T.outro, Outro],
 ];
 
-/** v0.5.13 release promo: same timeline for every cut, one locale per composition. */
+/** Release promo: same timeline for every cut, one locale per composition. */
 export const Promo: React.FC<{ locale?: Locale }> = ({ locale = "en" }) => {
   const frame = useCurrentFrame();
   return (
